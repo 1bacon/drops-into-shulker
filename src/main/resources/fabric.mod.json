@@ -1,16 +1,16 @@
 {
   "schemaVersion": 1,
-  "id": "modid",
+  "id": "drops-into-shulker",
   "version": "${version}",
 
-  "name": "Example Mod",
-  "description": "This is an example description! Tell everyone what your mod is about!",
+  "name": "Drops into Shulker",
+  "description": "Collected drops will go into a Shulker, if it's held in the off-hand.",
   "authors": [
-    "Me!"
+    "onebacon"
   ],
   "contact": {
-    "homepage": "https://fabricmc.net/",
-    "sources": "https://github.com/FabricMC/fabric-example-mod"
+    "homepage": "https://onebacon.de/contact",
+    "sources": ""
   },
 
   "license": "CC0-1.0",
@@ -19,11 +19,11 @@
   "environment": "*",
   "entrypoints": {
     "main": [
-      "net.fabricmc.example.ExampleMod"
+      "de.onebacon.drops_into_shulker.DropsIntoShulker"
     ]
   },
   "mixins": [
-    "modid.mixins.json"
+    "drops-into-shulker.mixins.json"
   ],
 
   "depends": {
