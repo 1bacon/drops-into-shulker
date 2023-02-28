@@ -12,7 +12,7 @@ import org.jetbrains.annotations.Nullable;
  * Wrapper of ShulkerBoxBlockEntity, to allow writing of NBT and adding stacks, similar to SimpleInventory.
  */
 public class ShulkerInventoryWrapper extends ShulkerBoxBlockEntity {
-
+    @SuppressWarnings("unused")
     public ShulkerInventoryWrapper(@Nullable DyeColor color, BlockPos pos, BlockState state) {
         super(color, pos, state);
     }
