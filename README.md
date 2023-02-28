@@ -11,7 +11,7 @@ I use it myself and don't have any issues, but I can't promise anything.
 |-----------|
 | 1.19      |
 
-## YOUR MOD DELTED MY DIAMONDS
+## YOUR MOD DELETED MY DIAMONDS
 First of all: *sorry :(*
 
 If you encounter an issue please post it as such here.
