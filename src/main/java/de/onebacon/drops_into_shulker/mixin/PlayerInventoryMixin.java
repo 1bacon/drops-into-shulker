@@ -4,9 +4,11 @@ package de.onebacon.drops_into_shulker.mixin;
 import de.onebacon.drops_into_shulker.DropsIntoShulker;
 import de.onebacon.drops_into_shulker.ShulkerInventoryWrapper;
 import net.minecraft.block.Block;
+import net.minecraft.block.Blocks;
 import net.minecraft.block.ShulkerBoxBlock;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventory;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Nameable;
@@ -26,35 +28,37 @@ public abstract class PlayerInventoryMixin implements Inventory, Nameable {
     public DefaultedList<ItemStack> offHand;
 
     @Inject(method = "insertStack", at = @At("HEAD"), cancellable = true)
-    private void onPlayerTouch(ItemStack stack, CallbackInfoReturnable<Boolean> cir) {
-        ItemStack shulker = this.offHand.get(0);
-        Block possible_shulker = Block.getBlockFromItem(shulker.getItem());
-        if (possible_shulker instanceof ShulkerBoxBlock) {
+    private void insertStack(ItemStack stack, CallbackInfoReturnable<Boolean> cir) {
+        ItemStack offhand_item = this.offHand.get(0);
+        Block offhand_block = offhand_item.getItem() instanceof BlockItem ? ((BlockItem)offhand_item.getItem()).getBlock() : Blocks.AIR;
 
-            DropsIntoShulker.LOGGER.info("Has shulker");
 
-            NbtCompound tag = shulker.getOrCreateSubNbt("BlockEntityTag");
-            ShulkerInventoryWrapper inv = new ShulkerInventoryWrapper(BlockPos.ORIGIN, possible_shulker.getDefaultState());
+        if (Block.getBlockFromItem(offhand_item.getItem()) instanceof ShulkerBoxBlock) {
 
-            if (!inv.canInsert(0, stack, null))
+            NbtCompound tag = offhand_item.getOrCreateSubNbt("BlockEntityTag");
+            ShulkerInventoryWrapper temp_shulker = new ShulkerInventoryWrapper(BlockPos.ORIGIN, offhand_block.getDefaultState());
+
+            DropsIntoShulker.LOGGER.info(BlockPos.ORIGIN.toString());
+            DropsIntoShulker.LOGGER.info(BlockPos.ORIGIN.toShortString());
+
+            if (!temp_shulker.canInsert(0, stack, null))
             {   //Prevent shulker stacking
                 return;
             }
 
-            inv.readNbt(tag);
+            temp_shulker.readNbt(tag);
 
-            ItemStack s = inv.addStack(stack);
+            ItemStack return_stack = temp_shulker.addStack(stack);
 
 
             NbtCompound nbt_out = new NbtCompound();
-            inv._writeNbt(nbt_out);
+            temp_shulker._writeNbt(nbt_out);
 
-            if (s.getCount() != stack.getCount()) {
-                stack.setCount(s.getCount());
+            if (return_stack.getCount() != stack.getCount()) {
+                stack.setCount(return_stack.getCount());
                 tag.put("Items", nbt_out.get("Items"));
-                if (s.isEmpty()){
+                if (return_stack.isEmpty()){
                     cir.setReturnValue(true);
-                    cir.cancel();
                 }
             }
         }
