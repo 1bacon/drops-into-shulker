@@ -13,7 +13,7 @@
     "sources": ""
   },
 
-  "license": "CC0-1.0",
+  "license": "GPL",
   "icon": "assets/modid/icon.png",
 
   "environment": "*",
@@ -29,7 +29,7 @@
   "depends": {
     "fabricloader": ">=0.14.14",
     "fabric-api": "*",
-    "minecraft": "~1.19.3",
+    "minecraft": "~1.19",
     "java": ">=17"
   },
   "suggests": {

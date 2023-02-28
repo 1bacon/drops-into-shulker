@@ -1,9 +1,21 @@
-# Fabric Example Mod
+# Drops Into Shulker
 
-## Setup
+Mod that makes collected drops go into a shulker if it's in the offhand.
 
-For setup instructions please see the [fabric wiki page](https://fabricmc.net/wiki/tutorial:setup) that relates to the IDE that you are using.
+Inherently "unstable" due to NBT editing. 
+I use it myself and don't have any issues, but I can't promise anything.
+
+## Versions
+
+| Supported |
+|-----------|
+| 1.19      |
+
+## YOUR MOD DELTED MY DIAMONDS
+First of all: *sorry :(*
+
+If you encounter an issue please post it as such here.
+Has to be reproducible for me to fix.
 
 ## License
-
-This template is available under the CC0 license. Feel free to learn from it and incorporate it in your own projects.
+GPL
