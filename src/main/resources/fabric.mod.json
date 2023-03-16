@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "id": "drops-into-shulker",
+  "version": "${version}",
+
+  "name": "Drops into Shulker",
+  "description": "Collected drops will go into a Shulker, if it's held in the off-hand.",
+  "authors": [
+    "onebacon"
+  ],
+  "contact": {
+    "homepage": "https://onebacon.de/contact",
+    "sources": ""
+  },
+
+  "license": "CC0-1.0",
+  "icon": "assets/modid/icon.png",
+
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "de.onebacon.drops_into_shulker.DropsIntoShulker"
+    ]
+  },
+  "mixins": [
+    "drops-into-shulker.mixins.json"
+  ],
+
+  "depends": {
+    "fabricloader": ">=0.14.14",
+    "fabric-api": "*",
+    "minecraft": "~1.19.3",
+    "java": ">=17"
+  },
+  "suggests": {
+    "another-mod": "*"
+  }
+}
