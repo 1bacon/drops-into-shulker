@@ -2,7 +2,9 @@
 
 # Drops Into Shulker
 <a href="https://github.com/1bacon/drops-into-shulker/blob/master/LICENSE"> ![GitHub license](https://img.shields.io/github/license/1bacon/drops-into-shulker?style=for-the-badge) </a>
+
 <a href="https://modrinth.com/mod/drops-into-shulker"> ![Modrinth Downloads](https://img.shields.io/modrinth/dt/drops-into-shulker?style=for-the-badge) \
+
 ![Modrinth Game Versions](https://img.shields.io/modrinth/game-versions/drops-into-shulker?label=Supported%20versions&style=for-the-badge) </a>
 
 Drops-Into-Shulker makes all collected drops go into a shulker if it's in the offhand. \
@@ -11,7 +13,9 @@ It follows all "normal" item rules. (Stack limits, Shulker stacking, ...)
 Inherently "unstable" due to NBT editing. 
 I use it myself and don't have any issues, but I can't promise anything.
 
-### Reporting Issues
+<img src="https://raw.githubusercontent.com/1bacon/drops-into-shulker/master/assets/preview.gif" width="700" alt="Preview Video"/>
+
+## Reporting Issues
 
 I have been using this mod for months and don't had any problems so far. If you experience any unwanted behaviour, please report it.
 
