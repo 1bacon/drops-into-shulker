@@ -2,9 +2,7 @@
 
 # Drops Into Shulker
 <a href="https://github.com/1bacon/drops-into-shulker/blob/master/LICENSE"> ![GitHub license](https://img.shields.io/github/license/1bacon/drops-into-shulker?style=for-the-badge) </a>
-
 <a href="https://modrinth.com/mod/drops-into-shulker"> ![Modrinth Downloads](https://img.shields.io/modrinth/dt/drops-into-shulker?style=for-the-badge) \
-
 ![Modrinth Game Versions](https://img.shields.io/modrinth/game-versions/drops-into-shulker?label=Supported%20versions&style=for-the-badge) </a>
 
 Drops-Into-Shulker makes all collected drops go into a shulker if it's in the offhand. \
