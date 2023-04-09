@@ -9,8 +9,8 @@
     "onebacon"
   ],
   "contact": {
-    "homepage": "https://onebacon.de/contact",
-    "sources": ""
+    "homepage": "https://github.com/1bacon/drops-into-shulker/issues",
+    "sources": "https://github.com/1bacon/drops-into-shulker"
   },
 
   "license": "GPL",

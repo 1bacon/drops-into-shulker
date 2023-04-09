@@ -2,12 +2,15 @@ package de.onebacon.drops_into_shulker.mixin;
 
 
 import de.onebacon.drops_into_shulker.ShulkerInventoryWrapper;
+import net.minecraft.advancement.criterion.Criteria;
 import net.minecraft.block.Block;
 import net.minecraft.block.ShulkerBoxBlock;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Nameable;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
@@ -23,6 +26,9 @@ public abstract class PlayerInventoryMixin implements Inventory, Nameable {
     @Shadow
     @Final
     public DefaultedList<ItemStack> offHand;
+    @Shadow
+    @Final
+    public PlayerEntity player;
 
     @Inject(method = "insertStack", at = @At("HEAD"), cancellable = true)
     private void insertStack(ItemStack stack, CallbackInfoReturnable<Boolean> cir) {
@@ -50,10 +56,16 @@ public abstract class PlayerInventoryMixin implements Inventory, Nameable {
         NbtCompound nbt_out = new NbtCompound();
         temp_shulker._writeNbt(nbt_out);
 
-        // Checking if they changed is not really necessary, but I don't want to change the NBT when nothing happened.
+        // If something got picked up.
         if (return_stack.getCount() != stack.getCount()) {
+
+            //Award Advancements
+            Criteria.INVENTORY_CHANGED.trigger((ServerPlayerEntity) player, player.getInventory(), stack);
+
             stack.setCount(return_stack.getCount());
             tag.put("Items", nbt_out.get("Items"));
+
+            //Returns true to play animation, increase stats, etc ...
             if (return_stack.isEmpty()) {
                 cir.setReturnValue(true);
             }
