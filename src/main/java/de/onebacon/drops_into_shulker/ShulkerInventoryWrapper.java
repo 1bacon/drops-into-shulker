@@ -1,5 +1,6 @@
 package de.onebacon.drops_into_shulker;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.ShulkerBoxBlockEntity;
 import net.minecraft.item.ItemStack;
@@ -7,6 +8,8 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.math.BlockPos;
 import org.jetbrains.annotations.Nullable;
+
+import static de.onebacon.drops_into_shulker.DropsIntoShulker.LOGGER;
 
 /**
  * Wrapper of ShulkerBoxBlockEntity, to allow writing of NBT and adding stacks, similar to SimpleInventory.
@@ -17,26 +20,33 @@ public class ShulkerInventoryWrapper extends ShulkerBoxBlockEntity {
         super(color, pos, state);
     }
 
-    public ShulkerInventoryWrapper(BlockPos pos, BlockState state) {
-        super(pos, state);
+    public ShulkerInventoryWrapper(ItemStack item, NbtCompound nbt) {
+        super(BlockPos.ORIGIN, Block.getBlockFromItem(item.getItem()).getDefaultState());
+        readNbt(nbt);
     }
 
-    public void _writeNbt (NbtCompound nbt) {
-        super.writeNbt(nbt);
+    public NbtCompound _writeNbt() {
+        NbtCompound out = new NbtCompound();
+        super.writeNbt(out);
+        return out;
     }
 
     public ItemStack addStack(ItemStack stack) {
         ItemStack itemStack = stack.copy();
-        this.addToExistingSlot(itemStack);
-        if (itemStack.isEmpty()) {
-            return ItemStack.EMPTY;
-        } else {
-            this.addToNewSlot(itemStack);
-            return itemStack.isEmpty() ? ItemStack.EMPTY : itemStack;
+        //Prevent shulker stacking
+        if (!this.canInsert(0, stack, null))
+        {
+            return itemStack;
         }
+
+        this.addToExistingSlot(itemStack);
+        this.addToNewSlot(itemStack);
+
+        return itemStack.isEmpty() ? ItemStack.EMPTY : itemStack;
     }
+
     private void addToExistingSlot(ItemStack stack) {
-        for(int i = 0; i < INVENTORY_SIZE; ++i) {
+        for (int i = 0; i < INVENTORY_SIZE; ++i) {
             ItemStack itemStack = this.getStack(i);
             if (ItemStack.canCombine(itemStack, stack)) {
                 this.transfer(stack, itemStack);
@@ -47,8 +57,9 @@ public class ShulkerInventoryWrapper extends ShulkerBoxBlockEntity {
         }
 
     }
+
     private void addToNewSlot(ItemStack stack) {
-        for(int i = 0; i < INVENTORY_SIZE; ++i) {
+        for (int i = 0; i < INVENTORY_SIZE; ++i) {
             ItemStack itemStack = this.getStack(i);
             if (itemStack.isEmpty()) {
                 this.setStack(i, stack.copy());
@@ -58,6 +69,7 @@ public class ShulkerInventoryWrapper extends ShulkerBoxBlockEntity {
         }
 
     }
+
     private void transfer(ItemStack source, ItemStack target) {
         int i = Math.min(this.getMaxCountPerStack(), target.getMaxCount());
         int j = Math.min(source.getCount(), i - target.getCount());
