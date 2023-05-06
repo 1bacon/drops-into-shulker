@@ -10,16 +10,18 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtElement;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Nameable;
 import net.minecraft.util.collection.DefaultedList;
-import net.minecraft.util.math.BlockPos;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
+import java.util.Optional;
 
 @Mixin(PlayerInventory.class)
 public abstract class PlayerInventoryMixin implements Inventory, Nameable {
@@ -31,44 +33,33 @@ public abstract class PlayerInventoryMixin implements Inventory, Nameable {
     public PlayerEntity player;
 
     @Inject(method = "insertStack", at = @At("HEAD"), cancellable = true)
-    private void insertStack(ItemStack stack, CallbackInfoReturnable<Boolean> cir) {
+    private void insertStack(ItemStack collected, CallbackInfoReturnable<Boolean> cir) {
         ItemStack offhand_item = this.offHand.get(0);
-        Block offhand_block = Block.getBlockFromItem(offhand_item.getItem());
 
-        if (!(offhand_block instanceof ShulkerBoxBlock)) {
+        if (!(Block.getBlockFromItem(offhand_item.getItem()) instanceof ShulkerBoxBlock)) {
             return; // Offhand is not a Shulker
         }
 
-        NbtCompound tag = offhand_item.getOrCreateSubNbt("BlockEntityTag");
-        ShulkerInventoryWrapper temp_shulker = new ShulkerInventoryWrapper(BlockPos.ORIGIN, offhand_block.getDefaultState());
-
-        if (!temp_shulker.canInsert(0, stack, null)) {
-            return; //Prevent shulker stacking
-        }
-
-        //Fill temp_shulker with off_hand contents
-        temp_shulker.readNbt(tag);
+        NbtCompound offhand_inventory = offhand_item.getOrCreateSubNbt("BlockEntityTag");
+        ShulkerInventoryWrapper temp_shulker = new ShulkerInventoryWrapper(offhand_item, offhand_inventory);
 
         //Try to add the collected stack to temp_shulker
-        ItemStack return_stack = temp_shulker.addStack(stack);
+        ItemStack return_stack = temp_shulker.addStack(collected);
 
         //Save the inventory of temp_shulker
-        NbtCompound nbt_out = new NbtCompound();
-        temp_shulker._writeNbt(nbt_out);
+        Optional<NbtElement> nbt_out = Optional.ofNullable(temp_shulker._writeNbt().get("Items"));
 
-        // If something got picked up.
-        if (return_stack.getCount() != stack.getCount()) {
+        //Award Advancements if something got picked up.
+        if (return_stack.getCount() != collected.getCount())
+            Criteria.INVENTORY_CHANGED.trigger((ServerPlayerEntity) player, player.getInventory(), collected);
 
-            //Award Advancements
-            Criteria.INVENTORY_CHANGED.trigger((ServerPlayerEntity) player, player.getInventory(), stack);
+        collected.setCount(return_stack.getCount());
 
-            stack.setCount(return_stack.getCount());
-            tag.put("Items", nbt_out.get("Items"));
+        nbt_out.ifPresent(nbt -> offhand_inventory.put("Items", nbt));
 
-            //Returns true to play animation, increase stats, etc ...
-            if (return_stack.isEmpty()) {
-                cir.setReturnValue(true);
-            }
+        //Returns true to play animation, increase stats, etc ...
+        if (return_stack.isEmpty()) {
+            cir.setReturnValue(true);
         }
     }
 }
