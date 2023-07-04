@@ -13,6 +13,13 @@ I use it myself and don't have any issues, but I can't promise anything.
 
 <img src="https://raw.githubusercontent.com/1bacon/drops-into-shulker/master/assets/preview.gif" width="700" alt="Preview Video"/>
 
+## Compatibility ✔️
+Should be compatible with modded shulkers, like [Reinforced Shulker Boxes](https://modrinth.com/mod/reinforced-shulker-boxes), etc. \
+Thanks to [Meshiest](https://github.com/Meshiest)
+
+## Contributors
+[Meshiest](https://github.com/Meshiest)
+
 ## Reporting Issues
 
 I have been using this mod for months and don't had any problems so far. If you experience any unwanted behaviour, please report it.
