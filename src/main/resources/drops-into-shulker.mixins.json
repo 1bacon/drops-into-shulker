@@ -4,10 +4,10 @@
   "package": "de.onebacon.drops_into_shulker.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
-    "PlayerInventoryMixin"
+    "PlayerInventoryMixin",
+    "ShulkerBoxBlockEntityMixin"
   ],
-  "client": [
-  ],
+  "client": [],
   "injectors": {
     "defaultRequire": 1
   }
