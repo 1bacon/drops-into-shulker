@@ -26,9 +26,9 @@ public class ShulkerInventoryWrapper extends ShulkerBoxBlockEntity {
         super(BlockPos.ORIGIN, Block.getBlockFromItem(item.getItem()).getDefaultState());
 
         // properly get the shulkerbox size and prime the entity inventory
-        var correctEntity = (ShulkerSizeExt) ((BlockWithEntity) Block.getBlockFromItem(item.getItem()))
-                .createBlockEntity(BlockPos.ORIGIN, getCachedState());
-        setInvStackList(DefaultedList.ofSize(correctEntity.getInvSize(), ItemStack.EMPTY));
+        ShulkerBoxBlockEntity correctEntity = (ShulkerBoxBlockEntity) ((BlockWithEntity) Block.getBlockFromItem(item.getItem()))
+                .createBlockEntity(BlockPos.ORIGIN, null);
+        setInvStackList(DefaultedList.ofSize(correctEntity.size(), ItemStack.EMPTY));
 
         readNbt(nbt);
     }
