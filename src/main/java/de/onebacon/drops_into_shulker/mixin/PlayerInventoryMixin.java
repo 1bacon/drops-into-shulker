@@ -11,7 +11,12 @@ import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
+import net.minecraft.network.packet.s2c.play.OverlayMessageS2CPacket;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.text.MutableText;
+import net.minecraft.text.Style;
+import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Nameable;
 import net.minecraft.util.collection.DefaultedList;
 import org.spongepowered.asm.mixin.Final;
@@ -39,6 +44,17 @@ public abstract class PlayerInventoryMixin implements Inventory, Nameable {
         if (!(Block.getBlockFromItem(offhand_item.getItem()) instanceof ShulkerBoxBlock)) {
             return; // Offhand is not a Shulker
         }
+
+        // Fix for a dupe using carpet stackableShulkerBoxes
+        if (offhand_item.getCount() > 1) {
+            //display error message
+            MutableText msg = Text.of("Drops-Into-Shulker only works with non-stacked shulker boxes.").copy();
+            msg.setStyle(Style.EMPTY.withFormatting(Formatting.RED));
+            // This API is pretty clunky...
+            ((ServerPlayerEntity) player).networkHandler.sendPacket(new OverlayMessageS2CPacket(msg));
+            return;
+        }
+
 
         NbtCompound offhand_inventory = offhand_item.getOrCreateSubNbt("BlockEntityTag");
         ShulkerInventoryWrapper temp_shulker = new ShulkerInventoryWrapper(offhand_item, offhand_inventory);
