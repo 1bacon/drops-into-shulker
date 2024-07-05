@@ -11,38 +11,25 @@ import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 
 import org.jetbrains.annotations.Nullable;
+import org.spongepowered.asm.mixin.Shadow;
 
 /**
  * Wrapper of ShulkerBoxBlockEntity, to allow writing of NBT and adding stacks,
  * similar to SimpleInventory.
  */
 public class ShulkerInventoryWrapper extends ShulkerBoxBlockEntity {
-    @SuppressWarnings("unused")
-    public ShulkerInventoryWrapper(@Nullable DyeColor color, BlockPos pos, BlockState state) {
+
+    private ShulkerBoxBlockEntity parent;
+
+    public ShulkerInventoryWrapper(@Nullable DyeColor color, BlockPos pos, BlockState state, ShulkerBoxBlockEntity parent) {
         super(color, pos, state);
-    }
-
-    public ShulkerInventoryWrapper(ItemStack item, NbtCompound nbt) {
-        super(BlockPos.ORIGIN, Block.getBlockFromItem(item.getItem()).getDefaultState());
-
-        // properly get the shulkerbox size and prime the entity inventory
-        ShulkerBoxBlockEntity correctEntity = (ShulkerBoxBlockEntity) ((BlockWithEntity) Block.getBlockFromItem(item.getItem()))
-                .createBlockEntity(BlockPos.ORIGIN, null);
-        setInvStackList(DefaultedList.ofSize(correctEntity.size(), ItemStack.EMPTY));
-
-        readNbt(nbt);
-    }
-
-    public NbtCompound _writeNbt() {
-        NbtCompound out = new NbtCompound();
-        super.writeNbt(out);
-        return out;
+        this.parent = parent;
     }
 
     public ItemStack addStack(ItemStack stack) {
         ItemStack itemStack = stack.copy();
         // Prevent shulker stacking
-        if (!this.canInsert(0, stack, null)) {
+        if (!parent.canInsert(0, stack, null)) {
             return itemStack;
         }
 
@@ -53,9 +40,9 @@ public class ShulkerInventoryWrapper extends ShulkerBoxBlockEntity {
     }
 
     private void addToExistingSlot(ItemStack stack) {
-        for (int i = 0; i < this.size(); ++i) {
-            ItemStack itemStack = this.getStack(i);
-            if (ItemStack.canCombine(itemStack, stack)) {
+        for (int i = 0; i < parent.size(); ++i) {
+            ItemStack itemStack = parent.getStack(i);
+            if (ItemStack.areItemsEqual(itemStack, stack)) {
                 this.transfer(stack, itemStack);
                 if (stack.isEmpty()) {
                     return;
@@ -66,10 +53,10 @@ public class ShulkerInventoryWrapper extends ShulkerBoxBlockEntity {
     }
 
     private void addToNewSlot(ItemStack stack) {
-        for (int i = 0; i < this.size(); ++i) {
-            ItemStack itemStack = this.getStack(i);
+        for (int i = 0; i < parent.size(); ++i) {
+            ItemStack itemStack = parent.getStack(i);
             if (itemStack.isEmpty()) {
-                this.setStack(i, stack.copy());
+                parent.setStack(i, stack.copy());
                 stack.setCount(0);
                 return;
             }
@@ -78,7 +65,7 @@ public class ShulkerInventoryWrapper extends ShulkerBoxBlockEntity {
     }
 
     private void transfer(ItemStack source, ItemStack target) {
-        int i = Math.min(this.getMaxCountPerStack(), target.getMaxCount());
+        int i = Math.min(parent.getMaxCountPerStack(), target.getMaxCount());
         int j = Math.min(source.getCount(), i - target.getCount());
         if (j > 0) {
             target.increment(j);
