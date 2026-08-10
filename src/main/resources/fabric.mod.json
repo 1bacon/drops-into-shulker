@@ -11,7 +11,7 @@
 		"homepage": "https://github.com/1bacon/drops-into-shulker/issues",
 		"sources": "https://github.com/1bacon/drops-into-shulker"
 	},
-	"license": "GPL",
+	"license": "CC0-1.0",
 	"icon": "assets/drops-into-shulker/icon.png",
 	"environment": "*",
 	"entrypoints": {
@@ -23,12 +23,8 @@
 		"drops-into-shulker.mixins.json"
 	],
 	"depends": {
-		"fabricloader": ">=0.17.2",
-		"minecraft": "~1.21.10",
-		"java": ">=21",
-		"fabric-api": "*"
-	},
-	"suggests": {
-		"another-mod": "*"
+		"fabricloader": ">=0.19.3",
+		"minecraft": "~26.1.2",
+		"java": ">=25"
 	}
 }
